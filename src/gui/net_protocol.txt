@@ -1,0 +1,23 @@
+
+Data/commands exchange protocol between PiServer and CarGUI.
+
+CarGUI connects to the piserver.
+PiServer determines client ip and starts videostream from command line
+toward client on port 5000
+
+Commands:
+Forward:number      # like Forward:100  - 100% speed forward
+Backward:number     # like Backward:100 - 100% speed backward
+Right:number        # like Right:10     - right wheels are 10% slower
+Left:number         # like Left:10      - left wheels are 10% slower
+ARight:number       # like ARight:10    - turn arm 10 degree right
+ALeft:number        # like ALeft:10     - turn arm 10 degree left
+AForward:number     # like AForward:10  - turn arm 10 degree forward
+ABackward:number
+AUp:number          # like AUp:10       - turn arm 10 degree up
+ADown:number
+GRight:number       # like GRight:10    - turn gripper 10 degree right
+GLeft:number
+GClose:number       # like GClose:10    - close gripper for 10 degree
+GOpen:number
+Reset:0             # resets car
