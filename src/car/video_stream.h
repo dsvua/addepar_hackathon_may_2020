@@ -2,6 +2,10 @@
 #define JETRACER_VIDEO_STREAM_THREAD_H
 
 #include <opencv2/videoio.hpp>
+#include "Thread.h"
+#include "constants.h"
+#include "types.h"
+#include <fmt/format.h>
 
 namespace Jetracer {
 
@@ -22,7 +26,7 @@ namespace Jetracer {
         context_t * _ctx;
         cv::VideoWriter video_writer;
 
-    } // end of class
+    }; // end of class
 } // end of namespace Jetracer
 
 #endif // JETRACER_VIDEO_STREAM_THREAD_H

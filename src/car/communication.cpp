@@ -1,5 +1,6 @@
 
 #include "communication.h"
+using namespace std;
 
 namespace Jetracer {
     bool communicationThread::threadInitialize() {
@@ -53,11 +54,6 @@ namespace Jetracer {
 
     bool communicationThread::threadExecute() {
         while (true){
-            printf("Resetting hat\n");
-            // piServer.PiCar.resetHat();
-            // piServer.PiCar->resetHat();
-            // system("sudo killall gst-launch-1.0");
-            printf("res %e\n", res);
             printf("Creating connection\n");
             getIncomingConnection();
 
@@ -66,36 +62,28 @@ namespace Jetracer {
             //         " rotation=180 ! video/x-h264,width=640,height=480 "
             //         "! h264parse ! queue ! rtph264pay config-interval=1"
             //         " pt=96 ! udpsink host=192.168.192.13 port=9000\n");
-            startVideo(_client_ipstr);
+            startVideo();
 
             while(readMessage()){
                 printf("Getting message\n");
                 string message = getMessage();
                 printf("Parsing message\n");
                 parseMessage(message);
-                printf("Message:%s\n");
+                printf("Message:%s\n", message.c_str());
                
             }
         }
     }
 
-    bool communicationThread::readMessage(){
-
-    }
-
-    bool communicationThread::sendMessage(const char* buff, const int size){
-
-    }
-
     bool communicationThread::portIsOpen(){
-        return portIsOpen_;
+        return _portIsOpen;
     }
 
 
-    bool communicationThread::sendBuffer(char* buff, const int size){
+    bool communicationThread::sendBuffer(const char* buff, const int size){
         int sentSize = 0;
         while (sentSize < size){
-            int len = write(sd_, buff + sentSize, size - sentSize);
+            int len = write(_sd, buff + sentSize, size - sentSize);
             if (len < 0){
                 printf("%s", strerror(errno));
                 return false;
@@ -108,7 +96,7 @@ namespace Jetracer {
     bool communicationThread::receiveBuffer(char* buff, const int size){
         int receivedSize = 0;
         while (receivedSize < size){
-            int len = read(sd_, buff + receivedSize, size - receivedSize);
+            int len = read(_sd, buff + receivedSize, size - receivedSize);
             if (len < 0){
                 printf("receiveBuffer error %s", strerror(errno));
                 return false;
@@ -194,8 +182,8 @@ namespace Jetracer {
 
     }
 
-    void communicationThread::parseMessage(string message){
-        vector<string> splitted_message = splitMessage(message, ':');
+    void communicationThread::parseMessage(std::string message){
+        std::vector<std::string> splitted_message = splitMessage(message, ':');
         int value = atoi(splitted_message[1].c_str());
         //value = atoi(strtok(cmessage, ":"));
         //value = atoi(cmessage);
@@ -255,12 +243,12 @@ namespace Jetracer {
     }
 
     void communicationThread::stopVideo(){
-        jetracer_video_stream->threadShutdown();
+        jetracer_video_stream->shutdown();
         _ctx->stream_video = false;
     }
 
-    void communicationThread::threadShutdown(){
-        jetracer_video_stream->threadShutdown();
+    bool communicationThread::threadShutdown(){
+        jetracer_video_stream->shutdown();
         _ctx->stream_video = false;
         return true;
     }

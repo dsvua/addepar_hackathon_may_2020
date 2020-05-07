@@ -2,6 +2,7 @@
 #include "types.h"
 #include "realsense_camera.h"
 #include "image_pipeline.h"
+#include "communication.h"
 #include <iostream>
 #include <signal.h>
 
@@ -18,6 +19,8 @@ static void signal_handle(int signum)
 
 int main(int argc, char * argv[]) {
     Jetracer::context_t ctx;
+    ctx.depth_queue = new rs2::frame_queue(CAPACITY);
+    ctx.left_ir_queue = new rs2::frame_queue(CAPACITY);
 
     /* Register a shuwdown handler to ensure
        a clean shutdown if user types <ctrl+c> */
@@ -49,8 +52,8 @@ int main(int argc, char * argv[]) {
     }
 
     // caught CTRL+C
-    jetracer_communication_thread.threadShutdown();
-    jetracer_depth_camera.threadShutdown();
+    jetracer_communication_thread.shutdown();
+    jetracer_depth_camera.shutdown();
 }
 
 // image ignore area: 60px on left and 50px on bottom. 0,0 is top left corner

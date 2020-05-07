@@ -23,15 +23,15 @@ namespace Jetracer {
         unsigned int max_obstacle_height = 250; // ignore everything higher then 25cm
                                         // as car is not that tall
 
-        rs2::frame_queue depth_queue(CAPACITY);
-        rs2::frame_queue left_ir_queue(CAPACITY);
-        Ordered<rs2::rs2_intrinsics> jetson_camera_intrinsics;
+        rs2::frame_queue* depth_queue;
+        rs2::frame_queue* left_ir_queue;
+        rs2_intrinsics jetson_camera_intrinsics;
 
-        Ordered<bool> stream_video = false; // by default do not stream video
-        Ordered<std::string> client_ip_address = "None"; // address of desktop/laptop that controls car
+        bool stream_video = false; // by default do not stream video
+        std::string client_ip_address; // address of desktop/laptop that controls car
         int client_port = 9000; // port for video streaming/gstreamer that listens on control host
         int listen_port = 5000; // port to listen for commands
-        useconds_t wait_for_thread = 1 * 1000000 // wait for 1 sec for thread to start
+        useconds_t wait_for_thread = 1 * 1000000; // wait for 1 sec for thread to start
 
     } context_t;
 

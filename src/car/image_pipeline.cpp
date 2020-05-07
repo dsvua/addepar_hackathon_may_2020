@@ -17,7 +17,7 @@ namespace Jetracer {
 
         while (true){
             depth_frame tframe = frame{};
-            if (_ctx->depth_queue.poll_for_frame(&tframe))
+            if (_ctx->depth_queue->poll_for_frame(&tframe))
             {
                 // tframe.get_data();
                 int image_size

@@ -21,7 +21,7 @@ namespace Jetracer {
 
         context_t * _ctx;
         int image_size;
-    }
+    };
 } // namespace Jetracer
 
 #endif // JETRACER_IMAGE_PIPELINE_THREAD_H

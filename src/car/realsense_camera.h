@@ -28,7 +28,7 @@ namespace Jetracer {
         rs2::config _config;
         rs2::pipeline _pipeline;
         rs2::pipeline_profile _pipeline_profile;
-    }
+    };
 } // namespace Jetracer
 
 #endif // JETRACER_REALSENSE_D435I_THREAD_H

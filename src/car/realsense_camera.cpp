@@ -24,7 +24,7 @@ namespace Jetracer {
     bool realsenseD435iThread::threadExecute() {
 
         // Capture 30 frames to give autoexposure, etc. a chance to settle
-        for (auto i = 0; i < frames_to_skip; ++i) _pipeline.wait_for_frames();
+        for (auto i = 0; i < _ctx->frames_to_skip; ++i) _pipeline.wait_for_frames();
 
         while (true){
 
@@ -37,9 +37,9 @@ namespace Jetracer {
             // frame_count = depth_frame.get_frame_metadata(RS2_FRAME_METADATA_FRAME_COUNTER);
             // cout << "Emitter mode: " << emitter_mode << "frame count: " << frame_count << endl;
 
-            _ctx->depth_queue.enqueue(frameset.get_depth_frame());
+            _ctx->depth_queue->enqueue(frameset.get_depth_frame());
             if (_ctx->stream_video) {
-                _ctx->left_ir_queue.enqueue(frameset.get_infrared_frame(1));
+                _ctx->left_ir_queue->enqueue(frameset.get_infrared_frame(1));
             }
         }
 
