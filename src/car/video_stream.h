@@ -1,6 +1,7 @@
 #ifndef JETRACER_VIDEO_STREAM_THREAD_H
 #define JETRACER_VIDEO_STREAM_THREAD_H
 
+#include <opencv2/videoio.hpp>
 
 namespace Jetracer {
 
@@ -19,6 +20,7 @@ namespace Jetracer {
         virtual bool threadExecute();
         virtual bool threadShutdown();
         context_t * _ctx;
+        cv::VideoWriter video_writer;
 
     } // end of class
 } // end of namespace Jetracer

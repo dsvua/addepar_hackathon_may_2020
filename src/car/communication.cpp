@@ -226,7 +226,7 @@ namespace Jetracer {
             if (_speed > 0 ){
                 pwmSpeed = PWM_NEUTRAL + (PWM_FULL_FORWARD - PWM_NEUTRAL) * _speed / 100;
             } else {
-                pwmSpeed = PWM_NEUTRAL - (PWM_NEUTRAL - PWM_FULL_REVERSE) * (_speed * -1) / 100;
+                pwmSpeed = PWM_NEUTRAL + (PWM_NEUTRAL - PWM_FULL_REVERSE) * _speed / 100;
             }
             pca9685->setPWM(ESC_CHANNEL,0,pwmSpeed);
         }        
@@ -262,6 +262,7 @@ namespace Jetracer {
     void communicationThread::threadShutdown(){
         jetracer_video_stream->threadShutdown();
         _ctx->stream_video = false;
+        return true;
     }
 
 

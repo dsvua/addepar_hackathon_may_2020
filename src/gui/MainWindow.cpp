@@ -11,14 +11,14 @@
  * Created on November 25, 2016, 11:19 AM
  */
 
-#include <qt4/QtGui/qpainterpath.h>
+#include <QtGui/qpainterpath.h>
 
 #include "MainWindow.h"
 
 MainWindow::MainWindow() {
     widget.setupUi(this);
-    port_ = 8080;
-    host_ = "192.168.192.14";
+    port_ = 5000;
+    host_ = "192.168.192.23";
     mouseGrabbed_ = false;
     mouseBorder_ = 1;
     mouseIgnoreMoveRadius_ = 30;
@@ -46,7 +46,7 @@ MainWindow::MainWindow() {
 
     source->setProperty("port", 9000);
     source->setProperty("caps", QGst::Caps::fromString("application/x-rtp,"
-            " media=(string)video, width=1024, height=768, "
+            " media=(string)video, width=848, height=480, "
             "clock-rate=(int)90000, encoding-name=(string)H264"));
     pipeline_->add(source);
     //if(rtpbin->link(source) == false)
