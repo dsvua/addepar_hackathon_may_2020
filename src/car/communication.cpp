@@ -17,9 +17,8 @@ namespace Jetracer {
         pca9685->setPWMFrequency(50);
         // Set the PWM to "neutral" (1.5ms)
         sleep(1);
-        pca9685->setPWM(ESC_CHANNEL,0,PWM_NEUTRAL);
+        pca9685->setPWM(ESC_CHANNEL,0,ESC_PWM_NEUTRAL);
         _speed = 0;
-        // pca9685->setPWM(ESC_CHANNEL,0,_speed);
 
         // start listening on given network port
         struct sockaddr_in addr;
@@ -228,36 +227,27 @@ namespace Jetracer {
     }
 
     void communicationThread::setPwmSpeed(){
-        // if (_speed > -30 && _speed < 30) {
-        //     std::cout << "Speed: " << _speed << std::endl;
-        //     pca9685->setPWM(ESC_CHANNEL,0,PWM_NEUTRAL);
-        // } else {
-            int pwmSpeed = 0;
-            if (_speed > 0 ){
-                pwmSpeed = PWM_NEUTRAL + (PWM_FULL_FORWARD - PWM_NEUTRAL) * _speed / 100;
-            } else {
-                pwmSpeed = PWM_NEUTRAL + (PWM_NEUTRAL - PWM_FULL_REVERSE) * _speed / 100;
-            }
-            std::cout << "setPwmSpeed: " << pwmSpeed << std::endl;
-            pca9685->setPWM(ESC_CHANNEL,0,pwmSpeed);
-        // }        
+        int pwmSpeed = 0;
+        if (_speed > 0 ){
+            pwmSpeed = ESC_PWM_NEUTRAL + ESC_FORWARD_RANGE * _speed / 100;
+        } else {
+            pwmSpeed = ESC_PWM_NEUTRAL + ESC_REVERSE_RANGE * _speed / 100;
+        }
+        std::cout << "setPwmSpeed: " << pwmSpeed << std::endl;
+        pca9685->setPWM(ESC_CHANNEL,0,pwmSpeed);
     }
 
     void communicationThread::setPwmSteering(){
-        // if (_speed > -30 || _speed < 30) {
-        //     pca9685->setPWM(ESC_CHANNEL,0,PWM_NEUTRAL);
-        // } else {
-            int pwmSteering = 0;
-            if (_steering > 0 ){
-                pwmSteering = SERVO_PWM_NEUTRAL + SERVO_RIGHT_RANGE * _steering / 100;
-                // pwmSteering = 4096/2 + (4096/2) * _steering / 100;
-            } else {
-                pwmSteering = SERVO_PWM_NEUTRAL + SERVO_LEFT_RANGE * _steering / 100;
-                // pwmSteering = 4096/2 + (4096/2) * _steering / 100;
-            }
-            std::cout << "setPwmSteering: " << pwmSteering << std::endl;
-            pca9685->setPWM(STEERING_CHANNEL,0,pwmSteering);
-        // }        
+        int pwmSteering = 0;
+        if (_steering > 0 ){
+            pwmSteering = SERVO_PWM_NEUTRAL + SERVO_RIGHT_RANGE * _steering / 100;
+            // pwmSteering = 4096/2 + (4096/2) * _steering / 100;
+        } else {
+            pwmSteering = SERVO_PWM_NEUTRAL + SERVO_LEFT_RANGE * _steering / 100;
+            // pwmSteering = 4096/2 + (4096/2) * _steering / 100;
+        }
+        std::cout << "setPwmSteering: " << pwmSteering << std::endl;
+        pca9685->setPWM(STEERING_CHANNEL,0,pwmSteering);
     }
 
     void communicationThread::split(const string &s, char delim, vector<string> &elems){
