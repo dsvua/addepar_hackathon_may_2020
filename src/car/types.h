@@ -12,7 +12,7 @@ namespace Jetracer {
     {
         unsigned int cam_w = 848;
         unsigned int cam_h = 480;
-        unsigned int fps = 6;
+        unsigned int fps = 90;
         unsigned int frames_to_skip = 30; // discard all frames until start_frame to
                                        // give autoexposure, etc. a chance to settle
         unsigned int left_gap = 60; // ignore left 60 pixels on depth image as they
@@ -27,7 +27,7 @@ namespace Jetracer {
         rs2::frame_queue* left_ir_queue;
         rs2_intrinsics jetson_camera_intrinsics;
 
-        bool stream_video = false; // by default do not stream video
+        Ordered<bool>* stream_video; // by default do not stream video
         std::string client_ip_address; // address of desktop/laptop that controls car
         int client_port = 9000; // port for video streaming/gstreamer that listens on control host
         int listen_port = 5000; // port to listen for commands

@@ -18,15 +18,18 @@ namespace Jetracer {
         // rs2::device selected_device = pipeline_profile.get_device();
         // rs2::depth_sensor depth_sensor = selected_device.first<rs2::depth_sensor>();
         // depth_sensor.set_option(RS2_OPTION_EMITTER_ON_OFF, 1);
-
+        std::cout << "Camera thread is initialized" << std::endl;
+        return true;
     }
 
     bool realsenseD435iThread::threadExecute() {
 
+        std::cout << "Camera thread is executing" << std::endl;
         // Capture 30 frames to give autoexposure, etc. a chance to settle
         for (auto i = 0; i < _ctx->frames_to_skip; ++i) _pipeline.wait_for_frames();
+        std::cout << "Camera thread skipped first frames as asked" << std::endl;
 
-        while (true){
+        while (!m_doShutdown){
 
             // wait for frames and get frameset
             rs2::frameset frameset = _pipeline.wait_for_frames();
@@ -38,9 +41,7 @@ namespace Jetracer {
             // cout << "Emitter mode: " << emitter_mode << "frame count: " << frame_count << endl;
 
             _ctx->depth_queue->enqueue(frameset.get_depth_frame());
-            if (_ctx->stream_video) {
-                _ctx->left_ir_queue->enqueue(frameset.get_infrared_frame(1));
-            }
+            _ctx->left_ir_queue->enqueue(frameset.get_infrared_frame(1));
         }
 
         return true;

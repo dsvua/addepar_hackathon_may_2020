@@ -51,11 +51,13 @@ namespace Jetracer {
         int    _sd; //socket descriptor
         bool   _portIsOpen;
         int    _speed; // -100..0..100
+        int    _steering; // -100..0..100
         std::string _buff;
         bool sendBuffer(const char* buff, const int size);
         bool receiveBuffer(char* buff, const int size);
         void split(const std::string &s, char delim, std::vector<std::string> &elems);
         void setPwmSpeed();
+        void setPwmSteering();
         std::vector<std::string> splitMessage(const std::string &s, char delim);
         context_t * _ctx;
         videoStreamThread * jetracer_video_stream;

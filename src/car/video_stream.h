@@ -6,6 +6,8 @@
 #include "constants.h"
 #include "types.h"
 #include <fmt/format.h>
+#include <iostream>
+#include <librealsense2/rs.hpp>
 
 namespace Jetracer {
 

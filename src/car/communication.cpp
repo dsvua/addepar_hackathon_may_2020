@@ -53,7 +53,7 @@ namespace Jetracer {
     }
 
     bool communicationThread::threadExecute() {
-        while (true){
+        while (!m_doShutdown){
             printf("Creating connection\n");
             getIncomingConnection();
 
@@ -64,7 +64,7 @@ namespace Jetracer {
             //         " pt=96 ! udpsink host=192.168.192.13 port=9000\n");
             startVideo();
 
-            while(readMessage()){
+            while(!m_doShutdown && readMessage()){
                 printf("Getting message\n");
                 string message = getMessage();
                 printf("Parsing message\n");
@@ -72,7 +72,12 @@ namespace Jetracer {
                 printf("Message:%s\n", message.c_str());
                
             }
+            stopVideo();
         }
+        cout << "Stopping video" << endl;
+        stopVideo();
+        cout << "Video is stopped in communicationThread" << endl;
+        return true;
     }
 
     bool communicationThread::portIsOpen(){
@@ -105,10 +110,10 @@ namespace Jetracer {
                 printf("Empty packet");
                 break;
             }
-            printf("Received receiveBuffer size %i\n", len);
+            // printf("Received receiveBuffer size %i\n", len);
             receivedSize += len;
         }
-        printf("Size %i, receivedSize %i\n", size, receivedSize);
+        // printf("Size %i, receivedSize %i\n", size, receivedSize);
         return size == receivedSize;
     }
 
@@ -192,32 +197,67 @@ namespace Jetracer {
         if (command == "Reset"){
             pca9685->reset();
         } else if (command == "Forward"){
+            value = 1;
             _speed += value;
-            if (_speed > 100) _speed = 100;
+            if (_speed > 100){
+                _speed = 100;
+            }
             setPwmSpeed();
         } else if (command == "Backward"){
+            value = 1;
             _speed -= value;
-            if (_speed < -100) _speed = -100;
+            if (_speed < -100) {
+                 _speed = -100;
+            }
             setPwmSpeed();
         } else if (command == "Right"){
+            _steering = value;
+            if (_steering > 100) {
+                _steering = 100;
+            }
+            setPwmSteering();
         } else if (command == "Left"){
+            _steering = 0 - value;
+            if (_steering < -100) {
+                _steering = -100;
+            }
+            setPwmSteering();
         }
         //delete cmessage;
 
     }
 
     void communicationThread::setPwmSpeed(){
-        if (_speed > -30 || _speed < 30) {
-            pca9685->setPWM(ESC_CHANNEL,0,PWM_NEUTRAL);
-        } else {
+        // if (_speed > -30 && _speed < 30) {
+        //     std::cout << "Speed: " << _speed << std::endl;
+        //     pca9685->setPWM(ESC_CHANNEL,0,PWM_NEUTRAL);
+        // } else {
             int pwmSpeed = 0;
             if (_speed > 0 ){
                 pwmSpeed = PWM_NEUTRAL + (PWM_FULL_FORWARD - PWM_NEUTRAL) * _speed / 100;
             } else {
                 pwmSpeed = PWM_NEUTRAL + (PWM_NEUTRAL - PWM_FULL_REVERSE) * _speed / 100;
             }
+            std::cout << "setPwmSpeed: " << pwmSpeed << std::endl;
             pca9685->setPWM(ESC_CHANNEL,0,pwmSpeed);
-        }        
+        // }        
+    }
+
+    void communicationThread::setPwmSteering(){
+        // if (_speed > -30 || _speed < 30) {
+        //     pca9685->setPWM(ESC_CHANNEL,0,PWM_NEUTRAL);
+        // } else {
+            int pwmSteering = 0;
+            if (_steering > 0 ){
+                pwmSteering = SERVO_PWM_NEUTRAL + SERVO_RIGHT_RANGE * _steering / 100;
+                // pwmSteering = 4096/2 + (4096/2) * _steering / 100;
+            } else {
+                pwmSteering = SERVO_PWM_NEUTRAL + SERVO_LEFT_RANGE * _steering / 100;
+                // pwmSteering = 4096/2 + (4096/2) * _steering / 100;
+            }
+            std::cout << "setPwmSteering: " << pwmSteering << std::endl;
+            pca9685->setPWM(STEERING_CHANNEL,0,pwmSteering);
+        // }        
     }
 
     void communicationThread::split(const string &s, char delim, vector<string> &elems){
@@ -236,7 +276,8 @@ namespace Jetracer {
     }
 
     void communicationThread::startVideo(){
-        _ctx->stream_video = true;
+        _ctx->stream_video->set(true);
+        // std::cout << "in communication _ctx->stream_video->get(): " << _ctx->stream_video->get() << std::endl;
         jetracer_video_stream = new videoStreamThread(_ctx);
         jetracer_video_stream->initialize();
         jetracer_video_stream->waitRunning();
@@ -244,12 +285,10 @@ namespace Jetracer {
 
     void communicationThread::stopVideo(){
         jetracer_video_stream->shutdown();
-        _ctx->stream_video = false;
+        _ctx->stream_video->set(false);
     }
 
     bool communicationThread::threadShutdown(){
-        jetracer_video_stream->shutdown();
-        _ctx->stream_video = false;
         return true;
     }
 

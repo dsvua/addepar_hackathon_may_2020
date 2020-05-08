@@ -11,9 +11,22 @@ namespace Jetracer {
     // The nomenclature is for the ESC throttle, for the steering neutral is center,
     // full forward is right, full reverse is left
 
-    #define PWM_FULL_REVERSE 204 // 1ms/20ms * 4096
+    // PWM between 304-327 are neutral
+    #define PWM_FULL_REVERSE 100 // 1ms/20ms * 4096
     #define PWM_NEUTRAL 307      // 1.5ms/20ms * 4096
-    #define PWM_FULL_FORWARD 409 // 2ms/20ms * 4096
+    #define PWM_FULL_FORWARD 500 // 2ms/20ms * 4096
+
+    // default PWM for ESC
+    // #define PWM_FULL_REVERSE 204 // 1ms/20ms * 4096
+    // #define PWM_NEUTRAL 307      // 1.5ms/20ms * 4096
+    // #define PWM_FULL_FORWARD 409 // 2ms/20ms * 4096
+
+    #define SERVO_PWM_FULL_LEFT 276 // 1ms/20ms * 4096
+    #define SERVO_PWM_NEUTRAL 307      // 1.5ms/20ms * 4096
+    #define SERVO_PWM_FULL_RIGHT 356 // 2ms/20ms * 4096
+    #define SERVO_LEFT_RANGE (SERVO_PWM_NEUTRAL - SERVO_PWM_FULL_LEFT)
+    #define SERVO_RIGHT_RANGE (SERVO_PWM_FULL_RIGHT - SERVO_PWM_NEUTRAL)
+
 
     // The Steering Servo is plugged into the follow PWM channel
     #define STEERING_CHANNEL 0

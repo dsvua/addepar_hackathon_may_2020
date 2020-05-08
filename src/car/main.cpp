@@ -21,6 +21,8 @@ int main(int argc, char * argv[]) {
     Jetracer::context_t ctx;
     ctx.depth_queue = new rs2::frame_queue(CAPACITY);
     ctx.left_ir_queue = new rs2::frame_queue(CAPACITY);
+    ctx.stream_video = new Jetracer::Ordered<bool>(false); // do not stream video by default
+    // ctx.stream_video->set(false);
 
     /* Register a shuwdown handler to ensure
        a clean shutdown if user types <ctrl+c> */
@@ -47,12 +49,16 @@ int main(int argc, char * argv[]) {
     // jetracer_image_pipeline.initialize();
     // jetracer_image_pipeline.waitRunning(ctx.wait_for_thread);
 
+    cout << "entering infinite loop" << endl;
     while(!quit){
-        sleep(100);
+        sleep(1);
     }
 
     // caught CTRL+C
+    cout << "caught CTRL+C" << endl;
+    cout << "Closing thread: jetracer_communication_thread" << endl;
     jetracer_communication_thread.shutdown();
+    cout << "Closing thread: jetracer_depth_camera" << endl;
     jetracer_depth_camera.shutdown();
 }
 

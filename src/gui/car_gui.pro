@@ -1,5 +1,6 @@
 TARGET = car_gui
 DESTDIR = ../../build
+BUILDDIR = ../../build
 
 QT += widgets
 QT += network

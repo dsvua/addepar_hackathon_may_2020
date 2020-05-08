@@ -94,10 +94,10 @@ void MainWindow::keyPressEvent(QKeyEvent* event){
    
     switch (event->key()){
         case Qt::Key_Right:
-            this->sendMessage("Right");
+            this->sendMessage("Right:10");
             break;
         case Qt::Key_Left:
-            this->sendMessage("Left");
+            this->sendMessage("Left:10");
             break;
         case Qt::Key_Up:
             this->sendMessage("respond");
@@ -212,13 +212,21 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event){
             QCursor::setPos(tmpPoint);
         }
 
+        if (x > width/2) {
+            int delta = (int)((float)(x - width/2) / (float)(width/2) * 100);
+            sendMessage(QString("Right:%1").arg(QString::number(delta)));
+        } else {
+            int delta = (int)((float)(width/2 - x) / (float)(width/2) * 100);
+            sendMessage(QString("Left:%1").arg(QString::number(delta)));            
+        }
+
     }
 
     qDebug() << "height=" << height << " width=" << width << "dx=" << x << " dy=" << y << " local" << local_xy << widget.testWidget->mapToGlobal(QPoint(x,y)) << event->pos();
 }
 
 void MainWindow::wheelEvent(QWheelEvent* event){
-    if (!mouseGrabbed_){
+    if (mouseGrabbed_){
         int numDegrees = event->delta();
         qDebug() << "numDegrees" << numDegrees << "\n";
         if (numDegrees > 0){
